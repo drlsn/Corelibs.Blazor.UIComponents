@@ -19,6 +19,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    margin-bottom: 15px;
 }
 
 .menu-button {
@@ -51,7 +52,6 @@
 }
 
 .title {
-    font-size: 16px;
     margin: 0;
     padding: 0; 
 }

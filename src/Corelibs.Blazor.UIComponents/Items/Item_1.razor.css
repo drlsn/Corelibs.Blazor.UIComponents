@@ -1,43 +1,16 @@
 ﻿.item {
-
-}
-
-.row-1 {
-
-}
-
-.row-1-icon {
-
-}
-
-.row-1-texts {
-
-}
-
-.row-1-text-1 {
-
-}
-
-.row-1-text-2 {
-
-}
-
-.title-panel {
-
-}
-
-.menu-button {
-
-}
-
-.menu-button-icon {
-
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .title {
-
+    font-weight: lighter;
+    margin: 0;
 }
 
-.description {
-
+.div, ::deep .dots-button {
+    align-self: flex-end;
 }

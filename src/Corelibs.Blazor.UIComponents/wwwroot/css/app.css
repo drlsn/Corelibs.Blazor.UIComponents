@@ -6,6 +6,40 @@ body {
     background: rgb(244, 248, 254);
 }
 
+.item-menu-button-style {
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+    border-radius: 5px;
+}
+
+.item-menu-button-style:hover {
+    background: rgb(240, 240, 240);
+}
+
+.grid-1x2 {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 25px;
+    height: fit-content;
+    width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+    .grid-1x2 {
+        flex-direction: column;
+    }
+}
+
+.v-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 100%;
+    width: 100%;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
