@@ -10,7 +10,7 @@
 }
 
 .navbar-content {
-    width: 65px;
+    width: 67px;
     transition: width 300ms ease;
 }
 
@@ -164,10 +164,12 @@
     }
 
     .navbar-content {
-        display: none;
+       width: 0;
+       overflow: hidden;
     }
 
     .always-on {
         display: block;
+        width: 12rem;
     }
 }
