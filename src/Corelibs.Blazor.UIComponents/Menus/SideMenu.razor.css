@@ -1,4 +1,4 @@
-﻿.navbar {
+﻿.sidemenu {
     position: fixed;
     left: 0;
     top: 0;
@@ -9,24 +9,24 @@
     background: white;
 }
 
-.navbar-content {
+.sidemenu-content {
     width: 67px;
     transition: width 300ms ease;
 }
 
-.navbar-content:hover .button-name {
+.sidemenu-content:hover .button-name {
     display: block;
 }
 
-.navbar-content:hover .navbar-logo-name {
+.sidemenu-content:hover .sidemenu-logo-name {
     display: block;
 }
 
-.navbar-content:hover .button-group-name {
+.sidemenu-content:hover .button-group-name {
     color: rgb(128, 128, 128);
 }
 
-.navbar-content:hover {
+.sidemenu-content:hover {
     width: 12rem;
 }
 
@@ -39,7 +39,7 @@
     display: block;
 }
 
-.always-on .navbar-logo-name {
+.always-on .sidemenu-logo-name {
     display: block;
 }
 
@@ -47,7 +47,7 @@
     color: rgb(128, 128, 128);
 }
 
-.navbar-logo-panel {
+.sidemenu-logo-panel {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -60,7 +60,7 @@
     position: relative;
 }
 
-.navbar-logo-panel-bg {
+.sidemenu-logo-panel-bg {
     position: absolute;
     top: 0;
     left: 0;
@@ -111,13 +111,13 @@
     height: 25px;
 }
 
-.navbar-logo-name {
+.sidemenu-logo-name {
     display: none;
     text-transform: uppercase;
     font-weight: bold;
 }
 
-.navbar-list {
+.sidemenu-list {
     padding-left: 15px;
     padding-right: 15px;
     background: white;
@@ -163,7 +163,7 @@
         display: block;
     }
 
-    .navbar-content {
+    .sidemenu-content {
        width: 0;
        overflow: hidden;
     }

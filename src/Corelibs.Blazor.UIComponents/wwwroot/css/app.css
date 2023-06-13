@@ -2,6 +2,10 @@ body::-webkit-scrollbar {
     width: 0;
 }
 
+body {
+    background: rgb(244, 248, 254);
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

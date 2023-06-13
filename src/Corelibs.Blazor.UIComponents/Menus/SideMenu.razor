@@ -1,14 +1,14 @@
-﻿<nav class="navbar">
+﻿<nav class="sidemenu">
     <div class="menu-button menu-button-x" @onclick=@OnMenuButtonClick>
         <img class="menu-button-icon" src=@MenuIconUrl/>
     </div>
-    <div class="navbar-content @_navbarContentAlwaysOnCssClass">
-        <div class="navbar-logo-panel">
-            <div class="navbar-logo-panel-bg"></div>
+    <div class="sidemenu-content @_sidemenuContentAlwaysOnCssClass">
+        <div class="sidemenu-logo-panel">
+            <div class="sidemenu-logo-panel-bg"></div>
             <img class="logo-image" src=@LogoImageUrl />
-            <span class="navbar-logo-name">@LogoName</span>
+            <span class="sidemenu-logo-name">@LogoName</span>
         </div>
-        <div class="navbar-list">
+        <div class="sidemenu-list">
             @foreach (var group in ButtonGroups)
             {
                 <span class="button-group-name">@group.Name</span>
@@ -31,18 +31,21 @@
     [Parameter] public string LogoName { get; set; }
     [Parameter] public ButtonGroup[] ButtonGroups { get; set; }
     [Parameter] public string MenuIconUrl { get; set; }
+    [Parameter] public Action<int> OnSizeChanged { get; set; }
 
-    private string _navbarContentCssClass => _isMenuAlwaysActive ? "display: none;" : "";
-    private string _navbarContentAlwaysEnabledCssClass => _isMenuAlwaysActive ? "" : "display-none";
-    private string _navbarContentAlwaysOnCssClass => _isMenuAlwaysActive ? "always-on" : "";
+    private string _sidemenuContentAlwaysOnCssClass => IsMenuAlwaysActive ? "always-on" : "";
 
     public record ButtonGroup(string Name, Button[] Buttons);
     public record Button(string Name, string IconUrl);
 
-    private bool _isMenuAlwaysActive;
+    public bool IsMenuAlwaysActive { get; private set; }
     private void OnMenuButtonClick()
     {
-        _isMenuAlwaysActive = !_isMenuAlwaysActive;
+        IsMenuAlwaysActive = !IsMenuAlwaysActive;
+
+        int size = IsMenuAlwaysActive ? 225 : 0;
+        OnSizeChanged?.Invoke(size);
+
         InvokeAsync(StateHasChanged);
     }
 }
