@@ -1,24 +1,28 @@
 ﻿<nav class="navbar">
-    <div class="@_menuActiveCssClass menu-button menu-button-x" @onclick=@OnMenuButtonClick>
+    <div class="menu-button menu-button-x" @onclick=@OnMenuButtonClick>
         <img class="menu-button-icon" src=@MenuIconUrl/>
     </div>
-    <div class="navbar-logo-panel">
-        <div class="navbar-logo-panel-bg"></div>
-        <img class="logo-image" src=@LogoImageUrl />
-        <span class="navbar-logo-name">@LogoName</span>
-    </div>
-    <div class="navbar-list">
-        @foreach (var group in ButtonGroups)
-        {
-            <span class="button-group-name">@group.Name</span>
-            @foreach (var button in group.Buttons)
+    <div class="navbar-content @_navbarContentAlwaysOnCssClass">
+        <div class="navbar-logo-panel">
+            <div class="navbar-logo-panel-bg"></div>
+            <img class="logo-image" src=@LogoImageUrl />
+            <span class="navbar-logo-name">@LogoName</span>
+        </div>
+        <div class="navbar-list">
+            @foreach (var group in ButtonGroups)
             {
-                <div class="button-row">
-                    <img class="button-icon" src=@button.IconUrl />
-                    <span class="button-name">@button.Name</span>
+                <span class="button-group-name">@group.Name</span>
+                <div class="button-group">
+                    @foreach (var button in group.Buttons)
+                    {
+                        <div class="button-row">
+                            <img class="button-icon" src=@button.IconUrl />
+                            <span class="button-name">@button.Name</span>
+                        </div>
+                    }
                 </div>
             }
-        }
+        </div>
     </div>
 </nav>
 
@@ -26,17 +30,19 @@
     [Parameter] public string LogoImageUrl { get; set; }
     [Parameter] public string LogoName { get; set; }
     [Parameter] public ButtonGroup[] ButtonGroups { get; set; }
-    [Parameter] public string MenuIconUrl { get; set; } = "/images/icons/menu-icon-basic.png";
+    [Parameter] public string MenuIconUrl { get; set; }
 
-    private string _menuActiveCssClass => _isMenuActive ? "" : "";
+    private string _navbarContentCssClass => _isMenuAlwaysActive ? "display: none;" : "";
+    private string _navbarContentAlwaysEnabledCssClass => _isMenuAlwaysActive ? "" : "display-none";
+    private string _navbarContentAlwaysOnCssClass => _isMenuAlwaysActive ? "always-on" : "";
 
     public record ButtonGroup(string Name, Button[] Buttons);
     public record Button(string Name, string IconUrl);
 
-    private bool _isMenuActive;
+    private bool _isMenuAlwaysActive;
     private void OnMenuButtonClick()
     {
-        _isMenuActive = !_isMenuActive;
+        _isMenuAlwaysActive = !_isMenuAlwaysActive;
         InvokeAsync(StateHasChanged);
     }
 }

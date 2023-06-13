@@ -2,27 +2,48 @@
     position: fixed;
     left: 0;
     top: 0;
-    width: 70px;
+    width: fit-content;
     height: 100vh;
-    transition: width 300ms ease;
 
     display: block;
     background: white;
 }
 
-.navbar:hover {
+.navbar-content {
+    width: 65px;
+    transition: width 300ms ease;
+}
+
+.navbar-content:hover .button-name {
+    display: block;
+}
+
+.navbar-content:hover .navbar-logo-name {
+    display: block;
+}
+
+.navbar-content:hover .button-group-name {
+    color: rgb(128, 128, 128);
+}
+
+.navbar-content:hover {
     width: 12rem;
 }
 
-.navbar:hover .button-name {
+.always-on {
+    transition: width 300ms ease;
+    width: 12rem;
+}
+
+.always-on .button-name {
     display: block;
 }
 
-.navbar:hover .navbar-logo-name {
+.always-on .navbar-logo-name {
     display: block;
 }
 
-.navbar:hover .button-group-name {
+.always-on .button-group-name {
     color: rgb(128, 128, 128);
 }
 
@@ -49,18 +70,29 @@
     z-index: -1;
 }
 
+.menu-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+}
+
 .menu-button-x {
     display: none;
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    width: 25px;
-    height: 25px;
-    padding: 3px;
+    right: 0px;
+    top: 5px;
+    transform: translate(calc(100% + 10px), 0);
+    width: 35px;
+    height: 35px;
+    padding: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
+    position: absolute;
 }
 
 .menu-button-x:hover {
@@ -69,9 +101,7 @@
 }
 
 .menu-button-icon {
-    filter: invert(60%);
     width: 100%;
-    display: none;
     width: 100%;
     height: 100%;
 }
@@ -94,7 +124,7 @@
 }
 
 .button-group {
-
+    margin-top: 5px;
 }
 
 .button-group-name {
@@ -133,19 +163,11 @@
         display: block;
     }
 
-    .menu-button-icon {
+    .navbar-content {
+        display: none;
+    }
+
+    .always-on {
         display: block;
-    }
-
-    .navbar {
-        background: transparent;
-    }
-
-    .navbar-logo-panel {
-        display: none;
-    }
-
-    .navbar-list {
-        display: none;
     }
 }
