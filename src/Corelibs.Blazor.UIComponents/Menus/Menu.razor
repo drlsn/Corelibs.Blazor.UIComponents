@@ -1,0 +1,42 @@
+﻿<nav class="navbar">
+    <div class="@_menuActiveCssClass menu-button menu-button-x" @onclick=@OnMenuButtonClick>
+        <img class="menu-button-icon" src=@MenuIconUrl/>
+    </div>
+    <div class="navbar-logo-panel">
+        <div class="navbar-logo-panel-bg"></div>
+        <img class="logo-image" src=@LogoImageUrl />
+        <span class="navbar-logo-name">@LogoName</span>
+    </div>
+    <div class="navbar-list">
+        @foreach (var group in ButtonGroups)
+        {
+            <span class="button-group-name">@group.Name</span>
+            @foreach (var button in group.Buttons)
+            {
+                <div class="button-row">
+                    <img class="button-icon" src=@button.IconUrl />
+                    <span class="button-name">@button.Name</span>
+                </div>
+            }
+        }
+    </div>
+</nav>
+
+@code {
+    [Parameter] public string LogoImageUrl { get; set; }
+    [Parameter] public string LogoName { get; set; }
+    [Parameter] public ButtonGroup[] ButtonGroups { get; set; }
+    [Parameter] public string MenuIconUrl { get; set; } = "/images/icons/menu-icon-basic.png";
+
+    private string _menuActiveCssClass => _isMenuActive ? "" : "";
+
+    public record ButtonGroup(string Name, Button[] Buttons);
+    public record Button(string Name, string IconUrl);
+
+    private bool _isMenuActive;
+    private void OnMenuButtonClick()
+    {
+        _isMenuActive = !_isMenuActive;
+        InvokeAsync(StateHasChanged);
+    }
+}
