@@ -24,13 +24,20 @@
 }
 
 .dropdown {
-    width: fit-content;
-    height: fit-content;
+    width: min-content;
+    height: min-content;
     position: relative;
+    box-sizing: border-box;
 }
 
 .dropdown-trigger {
-    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+    height: min-content;
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .dropdown:focus {
@@ -45,6 +52,7 @@
     transform: translateX(-width);
     
     height: 0;
+    max-height: 0;
     box-sizing: border-box;
     z-index: 99999;
     background: white;
@@ -60,7 +68,9 @@
     outline: none;
     border-radius: 3px;
     box-sizing: border-box;
-    
+    margin: 0;
+    display: flex;
+    width: fit-content;
     text-transform: uppercase;
     font-weight: bold;
 }

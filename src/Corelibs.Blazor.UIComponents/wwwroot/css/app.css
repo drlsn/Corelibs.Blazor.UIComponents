@@ -24,10 +24,6 @@ body {
     border-radius: 5px;
 }
 
-.item-menu-button-style:hover {
-    background: rgb(240, 240, 240);
-}
-
 .grid-1x2 {
     display: flex;
     flex-wrap: nowrap;

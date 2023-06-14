@@ -4,7 +4,7 @@
 
     background: white;
 
-    padding: 20px;
+    padding: 10px;
 
     width: 100%;
     box-sizing: border-box;
@@ -18,6 +18,8 @@
 .title-panel {
     display: flex;
     justify-content: space-between;
+    padding: 10px;
+    padding-bottom: 0;
 }
 
 .title-texts {
@@ -72,8 +74,9 @@
     right: 0;
 }
 
-dic ::deep .burger-button {
+div ::deep .burger-button {
     padding: 3px;
+    padding-left: 0 px;
 }
 
 @media only screen and (max-width: 600px) {

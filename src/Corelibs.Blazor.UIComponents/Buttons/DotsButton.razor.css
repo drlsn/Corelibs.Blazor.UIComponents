@@ -3,25 +3,36 @@
     flex-direction: column;
     align-items: end;
     justify-content: center;
-    padding-right: 8px;
-    gap: 3px;
-    box-sizing: border-box;
+    height: 30px;
+    width: 30px;
+    position: relative;
 }
 
 .dot-1 {
-    width: 9px;
-    height: 3px;
+    position: absolute;
+    right: 30%;
+    width: 30%;
+    top: 25%;
+    height: 10%;
+    margin-bottom: 10%;
     background: rgb(90, 90, 90);
 }
 
 .dot-2 {
-    width: 12px;
-    height: 3px;
+    position: absolute;
+    right: 30%;
+    width: 40%;
+    top: 45%;
+    height: 10%;
+    margin-bottom: 10%;
     background: rgb(90, 90, 90);
 }
 
 .dot-3 {
-    width: 6px;
-    height: 3px;
+    position: absolute;
+    top: 65%;
+    right: 30%;
+    width: 20%; 
+    height: 10%;
     background: rgb(90, 90, 90);
 }
