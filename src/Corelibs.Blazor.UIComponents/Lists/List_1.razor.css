@@ -17,6 +17,11 @@
 
 .title-panel {
     display: flex;
+    justify-content: space-between;
+}
+
+.title-texts {
+    display: flex;
     flex-direction: column;
     position: relative;
     margin-bottom: 15px;

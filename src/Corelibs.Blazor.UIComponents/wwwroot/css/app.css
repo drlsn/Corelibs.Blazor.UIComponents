@@ -1,9 +1,19 @@
+:root {
+    --box-shadow-color: rgba(0, 0, 0, 0.75);
+    --s: 5px;
+}
+
 body::-webkit-scrollbar {
     width: 0;
 }
 
 body {
     background: rgb(244, 248, 254);
+}
+
+
+.list {
+    border-radius: 10px;
 }
 
 .item-menu-button-style {

@@ -1,10 +1,10 @@
 ﻿<div class="list">
     <div class="title-panel">
-        <h4 class="title">@Title</h4>
-        <span class="description">@Description</span>
-        <button class="menu-button menu-button-x">
-            <img class="menu-button-icon" src=@MenuIconUrl />
-        </button>
+        <div class="title-texts">
+            <h4 class="title">@Title</h4>
+            <span class="description">@Description</span>
+        </div>
+        <BurgerButton />
     </div>
     <div class="items">
         @ChildContent
