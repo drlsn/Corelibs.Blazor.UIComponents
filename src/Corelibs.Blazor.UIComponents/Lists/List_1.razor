@@ -4,7 +4,8 @@
             <h4 class="title">@Title</h4>
             <span class="description">@Description</span>
         </div>
-        <BurgerButton />
+        <Dropdown Model=@DropdownModel />
+        @*<BurgerButton />*@
     </div>
     <div class="items">
         @ChildContent
@@ -15,4 +16,50 @@
     [Parameter] public string Title { get; set; }
     [Parameter] public string Description { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private Dropdown.ViewModel DropdownModel = new(
+        Options: new()
+        {
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+            "Add",
+            "Remove",
+            "Edit",
+        },
+        Trigger: new(IsFixed: false, Value: "Menu", BgOn: false)
+    );
 }

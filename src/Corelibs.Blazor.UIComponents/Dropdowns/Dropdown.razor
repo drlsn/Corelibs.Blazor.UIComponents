@@ -1,5 +1,202 @@
-﻿<h3>Dropdown</h3>
+﻿@using Microsoft.JSInterop;
+@if (Model is null) { return; }
+
+<div class="@_dropdownClassId @_dropdownStyle dropdown @_isActiveCssClass" @ref=_dropdownListRef>
+    <div class="dropdown-trigger">
+        @{
+            <button class="button @_bgOffCssClass" aria-haspopup="true" aria-controls="dropdown-menu" 
+                @onclick=@OnTrigger>
+                @if (Model?.Trigger?.IsFixed is true)
+                {
+                    @if (Model.Trigger.Mode == Mode.Text)
+                    {
+                        <span>@Model.Trigger.Value</span>
+                    }
+                    else
+                    if (Model.Trigger.Mode == Mode.Icon)
+                    {
+                        <img src=@Model.Trigger.Value />
+                    }
+                    else
+                    {
+                        <span>Empty</span>
+                    }
+                }
+                else
+                {
+                    @if (Model.Trigger.Mode == Mode.Text)
+                    {
+                        <span>@Model.GetSelectedValue()</span>
+                    }
+                    else
+                    if (Model.Trigger.Mode == Mode.Icon)
+                    {
+                        <img src=@Model.GetSelectedValue() />
+                    }
+                    else
+                    {
+                        <span>Empty</span>
+                    }
+                }
+            </button>
+        }
+    </div>
+    <div class="@_dropdownListWrapClassId dropdown-option-list-wrap" role="menu" @ref=_dropdownListRef style=@_dropdownListWrapStyle>
+        <div class="out" @onclick=@OnFocusOut></div>
+        <div class="dropdown-option-list">
+            @foreach (var option in Model.Options)
+            {
+                if (HasIds && option.Id == Model.Selected ||
+                   !HasIds && option.Value == Model.Selected)
+                {
+                    continue;
+                }
+
+                <button class="dropdown-item" @onclick=@(() => OnTriggerButtonClick(option))>@option.Value</button>
+            }
+        </div>
+    </div>
+</div>
 
 @code {
+    public delegate Task<bool> OnOptionSelectedDelegate(Option option);
 
+    [Parameter] public ViewModel Model { get; set; }
+    [Parameter] public OnOptionSelectedDelegate OnOptionSelected { get; set; }
+    [Inject] public IJSRuntime JSRuntime { get; set; }
+
+    public bool IsActive { get; private set; } = false;
+
+    private string _isActiveCssClass => IsActive ? "is-active" : "";
+    private string _bgOffCssClass => Model?.Trigger?.BgOn is false ? "bg-off" : "";
+
+    private ElementReference _dropdownRef;
+    private ElementReference _dropdownListRef;
+
+    private string _dropdownClassId = "dropdown-" + Guid.NewGuid().ToString();
+    private string _dropdownListWrapClassId = "dropdown-list-wrap" + Guid.NewGuid().ToString();
+
+    private string _dropdownStyle = $"opacity: 0";
+    private string _dropdownListWrapStyle = "";
+
+    public bool HasIds { get; private set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Model is null)
+            return;
+
+        HasIds = Model.HasIds;
+
+        if (Model?.Options?.Count == 0)
+            return;
+
+        if (string.IsNullOrWhiteSpace(Model.Selected))
+        {
+            var opt1 = Model.Options.First();
+            Model = Model.SelectOption(Pass(opt1));
+        }
+
+        if (Model?.Trigger?.IsFixed is true && !string.IsNullOrWhiteSpace(Model?.Trigger.Value))
+        {
+            if (string.IsNullOrWhiteSpace(Model.Trigger.Value))
+            {
+                // error?
+            }
+        }
+        else
+        {
+        }
+    }
+
+    bool _isSecondRender = true;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await RepositionAndResize();
+            return;
+        }
+
+        if (_isSecondRender)
+        {
+            await RepositionAndResize();
+            _isSecondRender = false;
+        }
+    }
+
+    private async Task RepositionAndResize()
+    {
+        var rect = await JSRuntime.GetRect(_dropdownClassId);
+        var wrapRect = await JSRuntime.GetRect(_dropdownListWrapClassId);
+
+        var x = rect.Right - wrapRect.Width;
+        var y = rect.Bottom;
+
+        var windowRect = await JSRuntime.GetWindowDimensions();
+        _dropdownStyle = $"opacity: 100%;";
+        _dropdownListWrapStyle = $@"
+            height: fit-content; 
+            max-height: {windowRect.Height - wrapRect.Y - 50}px;
+            right: 0;
+            ";
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private Task OnFocusOut(MouseEventArgs args)
+    {
+        IsActive = false;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnTrigger()
+    {
+        IsActive = !IsActive;
+        await RepositionAndResize();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnTriggerButtonClick(Option option)
+    {
+        if (OnOptionSelected is not null)
+        {
+            bool result = await OnOptionSelected?.Invoke(option);
+            if (!result)
+                return;
+        }
+
+        Model = Model.SelectOption(Pass(option));
+
+        IsActive = false;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string Pass(Option option) => HasIds ? option.Id : option.Value;
+
+    private static Task<bool> OnValueChangedDefault(Option selected)
+    {
+        return Task.FromResult(true);
+    }
+
+    public record ViewModel(List<Option> Options, string Selected = "", Mode Mode = Mode.Text, Trigger Trigger = default)
+    {
+        public bool HasIds => Options.All(opt => !string.IsNullOrWhiteSpace(opt.Id));
+        public ViewModel SelectOption(string selected) => new(Options, selected, Mode, Trigger);
+        public string GetSelectedValue() => HasIds ? Options.First(opt => opt.Id == Selected).Value : Selected;
+    }
+
+    public record Option(string Id, string Value)
+    {
+        public static implicit operator Option(string value) => new("", value);
+    }
+
+    public record Trigger(bool IsFixed = false, bool BgOn = false, Mode Mode = Mode.Text, string Value = "");
+
+    public enum Mode
+    {
+        Text,
+        Icon
+    }
 }

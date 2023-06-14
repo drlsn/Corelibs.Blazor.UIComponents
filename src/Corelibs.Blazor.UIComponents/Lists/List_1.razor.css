@@ -66,6 +66,12 @@
     color: rgb(128, 128, 128);
 }
 
+.dropdown {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 @media only screen and (max-width: 600px) {
     .list {
         width: 100%;
