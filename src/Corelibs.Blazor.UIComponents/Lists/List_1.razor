@@ -4,7 +4,11 @@
             <h4 class="title">@Title</h4>
             <span class="description">@Description</span>
         </div>
-        <Dropdown Model=@DropdownModel />
+        <Dropdown Model=@DropdownModel>
+            <TriggerComponent>
+                <BurgerButton />
+            </TriggerComponent>
+        </Dropdown>
         @*<BurgerButton />*@
     </div>
     <div class="items">
@@ -60,6 +64,6 @@
             "Remove",
             "Edit",
         },
-        Trigger: new(IsFixed: false, Value: "Menu", BgOn: false)
+        Trigger: new(IsFixed: true, Value: "Menu", Mode: Dropdown.Mode.Component)
     );
 }

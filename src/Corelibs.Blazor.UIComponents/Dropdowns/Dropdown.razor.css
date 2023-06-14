@@ -29,6 +29,10 @@
     position: relative;
 }
 
+.dropdown-trigger {
+    height: fit-content;
+}
+
 .dropdown:focus {
     outline: none;
     border: none;
@@ -55,7 +59,6 @@
     background: rgb(249, 249, 249);
     outline: none;
     border-radius: 3px;
-    padding: 8px;
     box-sizing: border-box;
     
     text-transform: uppercase;

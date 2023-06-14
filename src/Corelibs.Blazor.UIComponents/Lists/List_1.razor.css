@@ -72,6 +72,10 @@
     right: 0;
 }
 
+dic ::deep .burger-button {
+    padding: 3px;
+}
+
 @media only screen and (max-width: 600px) {
     .list {
         width: 100%;

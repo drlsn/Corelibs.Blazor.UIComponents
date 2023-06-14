@@ -18,8 +18,9 @@
                         <img src=@Model.Trigger.Value />
                     }
                     else
+                    if (Model.Trigger.Mode == Mode.Component)
                     {
-                        <span>Empty</span>
+                        @TriggerComponent
                     }
                 }
                 else
@@ -29,13 +30,8 @@
                         <span>@Model.GetSelectedValue()</span>
                     }
                     else
-                    if (Model.Trigger.Mode == Mode.Icon)
                     {
                         <img src=@Model.GetSelectedValue() />
-                    }
-                    else
-                    {
-                        <span>Empty</span>
                     }
                 }
             </button>
@@ -63,6 +59,7 @@
 
     [Parameter] public ViewModel Model { get; set; }
     [Parameter] public OnOptionSelectedDelegate OnOptionSelected { get; set; }
+    [Parameter] public RenderFragment TriggerComponent { get; set; }
     [Inject] public IJSRuntime JSRuntime { get; set; }
 
     public bool IsActive { get; private set; } = false;
@@ -197,6 +194,7 @@
     public enum Mode
     {
         Text,
-        Icon
+        Icon,
+        Component
     }
 }
