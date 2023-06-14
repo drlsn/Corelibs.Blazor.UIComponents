@@ -42,10 +42,13 @@
         <div class="dropdown-option-list">
             @foreach (var option in Model.Options)
             {
-                if (HasIds && option.Id == Model.Selected ||
-                   !HasIds && option.Value == Model.Selected)
+                if (Model.HideSelected)
                 {
-                    continue;
+                    if (HasIds && option.Id == Model.Selected ||
+                    !HasIds && option.Value == Model.Selected)
+                    {
+                        continue;
+                    }
                 }
 
                 <button class="dropdown-item" @onclick=@(() => OnTriggerButtonClick(option))>@option.Value</button>
@@ -106,19 +109,15 @@
         }
     }
 
-    bool _isSecondRender = true;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (Model is null)
+            return;
+
         if (firstRender)
         {
             await RepositionAndResize();
             return;
-        }
-
-        if (_isSecondRender)
-        {
-            await RepositionAndResize();
-            _isSecondRender = false;
         }
     }
 
@@ -177,16 +176,17 @@
         return Task.FromResult(true);
     }
 
-    public record ViewModel(List<Option> Options, string Selected = "", Mode Mode = Mode.Text, Trigger Trigger = default)
+    public record ViewModel(List<Option> Options, string Selected = "", Mode Mode = Mode.Text, Trigger Trigger = default, bool HideSelected = false)
     {
         public bool HasIds => Options.All(opt => !string.IsNullOrWhiteSpace(opt.Id));
-        public ViewModel SelectOption(string selected) => new(Options, selected, Mode, Trigger);
+        public ViewModel SelectOption(string selected) => new(Options, selected, Mode, Trigger, HideSelected);
         public string GetSelectedValue() => HasIds ? Options.First(opt => opt.Id == Selected).Value : Selected;
     }
 
     public record Option(string Id, string Value)
     {
         public static implicit operator Option(string value) => new("", value);
+        public override string ToString() => $"{Id} - {Value}";
     }
 
     public record Trigger(bool IsFixed = false, bool BgOn = false, Mode Mode = Mode.Text, string Value = "");

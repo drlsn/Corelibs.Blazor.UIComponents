@@ -1,10 +1,17 @@
-﻿<div class="list">
-    <div class="title-panel">
-        <div class="title-texts">
-            <h4 class="title">@Title</h4>
-            <span class="description">@Description</span>
+﻿
+<div class="vlist-card">
+    <div class="list-title-panel">
+        <div class="list-title-texts">
+            @if (Title.IsOk())
+            {
+                <h4 class="list-title">@Title</h4>
+            }
+            @if (Description.IsOk())
+            {
+                <span class="list-description">@Description</span>
+            }
         </div>
-        <Dropdown Model=@DropdownModel>
+        <Dropdown Model=@DropdownModel OnOptionSelected=OnMenuOptionSelected>
             <TriggerComponent>
                 <BurgerButton />
             </TriggerComponent>
@@ -21,49 +28,6 @@
     [Parameter] public string Description { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
 
-    private Dropdown.ViewModel DropdownModel = new(
-        Options: new()
-        {
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-        },
-        Trigger: new(IsFixed: true, Value: "Menu", Mode: Dropdown.Mode.Component)
-    );
+    [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
+    [Parameter] public Dropdown.ViewModel DropdownModel { get; set; }
 }

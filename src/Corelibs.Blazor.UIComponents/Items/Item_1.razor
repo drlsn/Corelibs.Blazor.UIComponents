@@ -1,6 +1,6 @@
 ﻿<div class="item">
     <h5 class="title">@Title</h5>
-    <Dropdown Model=@MenuDropdownModel>
+    <Dropdown Model=@DropdownModel OnOptionSelected=OnMenuOptionSelected>
         <TriggerComponent>
             <DotsButton />
         </TriggerComponent>
@@ -9,50 +9,6 @@
 
 @code {
     [Parameter] public string Title { get; set; }
-
-    private Dropdown.ViewModel MenuDropdownModel = new(
-        Options: new()
-            {
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            "Add",
-            "Remove",
-            "Edit",
-            },
-        Trigger: new(IsFixed: true, Value: "Menu", Mode: Dropdown.Mode.Component)
-    );
+    [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
+    [Parameter] public Dropdown.ViewModel DropdownModel { get; set; }
 }

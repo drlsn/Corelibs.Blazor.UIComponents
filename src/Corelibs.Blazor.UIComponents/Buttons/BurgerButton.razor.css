@@ -6,22 +6,34 @@
     padding-right: 6px;
     gap: 3px;
     box-sizing: border-box;
+    position: relative;
 }
 
 .dot-1 {
-    width: 14px;
-    height: 3px;
-    background: rgb(40, 40, 40);
+    position: absolute;
+    right: 17%;
+    width: 65%;
+    top: 25%;
+    height: 10%;
+    margin-bottom: 10%;
+    background: rgb(50, 50, 50);
 }
 
 .dot-2 {
-    width: 18px;
-    height: 3px;
-    background: rgb(40, 40, 40);
+    position: absolute;
+    right: 17%;
+    width: 50%;
+    top: 45%;
+    height: 10%;
+    margin-bottom: 10%;
+    background: rgb(50, 50, 50);
 }
 
 .dot-3 {
-    width: 14px;
-    height: 3px;
-    background: rgb(40, 40, 40);
+    position: absolute;
+    top: 65%;
+    right: 17%;
+    width: 35%; 
+    height: 10%;
+    background: rgb(50, 50, 50);
 }
