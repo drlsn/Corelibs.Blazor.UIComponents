@@ -1,11 +1,13 @@
-﻿@using Microsoft.JSInterop;
+﻿@inherits UIComponent
+
+@using Microsoft.JSInterop;
 @if (Model is null) { return; }
 
 <div class="@_dropdownClassId @_dropdownStyle dropdown @_isActiveCssClass" @ref=_dropdownListRef>
     <div class="dropdown-trigger">
         @{
             <button class="button @_bgOffCssClass" aria-haspopup="true" aria-controls="dropdown-menu" 
-                @onclick=@OnTrigger>
+                @onclick=@OnTrigger @onclick:stopPropagation="true" @onclick:preventDefault="false">
                 @if (Model?.Trigger?.IsFixed is true)
                 {
                     @if (Model.Trigger.Mode == Mode.Text)
@@ -38,7 +40,7 @@
         }
     </div>
     <div class="@_dropdownListWrapClassId dropdown-option-list-wrap" role="menu" @ref=_dropdownListRef style=@_dropdownListWrapStyle>
-        <div class="out" @onclick=@OnFocusOut></div>
+        <div class="out" @onclick=@OnFocusOut @onclick:stopPropagation="true" @onclick:preventDefault="true"></div>
         <div class="dropdown-option-list">
             @foreach (var option in Model.Options)
             {
@@ -51,7 +53,12 @@
                     }
                 }
 
-                <button class="dropdown-item" @onclick=@(() => OnTriggerButtonClick(option))>@option.Value</button>
+                <button class="dropdown-item" 
+                    @onclick=@(() => OnTriggerButtonClick(option))
+                    @onclick:stopPropagation="true" @onclick:preventDefault="true">
+                    
+                    @option.Value
+                </button>
             }
         </div>
     </div>
@@ -155,12 +162,9 @@
 
     private async Task OnTriggerButtonClick(Option option)
     {
-        if (OnOptionSelected is not null)
-        {
-            bool result = await OnOptionSelected?.Invoke(option);
-            if (!result)
-                return;
-        }
+        var result = await InvokeBool(OnOptionSelected, option)();
+        if (!result)
+            return;
 
         Model = Model.SelectOption(Pass(option));
 

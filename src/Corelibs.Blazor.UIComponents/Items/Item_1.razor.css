@@ -2,17 +2,20 @@
     display: flex;
     align-items: center;
     width: 100%;
+    align-items: start;
     justify-content: space-between;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
     box-sizing: border-box;
-    height: 30px;
+    min-height: 25px;
+    max-height: fit-content;
 }
 
 .title {
     font-weight: lighter;
     margin: 0;
+    align-self: center;
 }
 
 .item:hover:not(:has(.dropdown:hover))  {
@@ -22,6 +25,12 @@
 .div, ::deep .dots-button {
     padding: 0;
     box-sizing: border-box;
-    height: 30px;
-    width: 30px;
+    height: 25px;
+    width: 25px;
+}
+
+.dots-button, ::deep .dot-1, 
+.dots-button, ::deep .dot-2,
+.dots-button, ::deep .dot-3 {
+    background: rgb(160, 160, 160);
 }

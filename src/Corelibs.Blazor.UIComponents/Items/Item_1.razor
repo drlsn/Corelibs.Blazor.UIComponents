@@ -1,4 +1,6 @@
-﻿<div class="item">
+﻿@inherits UIComponent
+
+<div class="item" @onclick=@InvokeVoid(OnItemClick, Id)>
     <h5 class="title">@Title</h5>
     <Dropdown Model=@DropdownModel OnOptionSelected=OnMenuOptionSelected>
         <TriggerComponent>
@@ -8,7 +10,11 @@
 </div>
 
 @code {
+    public delegate Task OnItemClickDelegate(string id);
+
+    [Parameter] public string Id { get; set; }
     [Parameter] public string Title { get; set; }
     [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
+    [Parameter] public OnItemClickDelegate? OnItemClick { get; set; }
     [Parameter] public Dropdown.ViewModel DropdownModel { get; set; }
 }
