@@ -1,0 +1,20 @@
+﻿@inherits UIComponent
+
+<div class="dropdown-labeled">
+    <h4 class="dropdown-label">@Title</h4>
+    <Dropdown 
+        Model=@Model
+        OnOptionSelected=OnOptionSelected>
+
+        <TriggerComponent>@TriggerComponent</TriggerComponent>
+
+    </Dropdown>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public Dropdown.ViewModel Model { get; set; }
+    [Parameter] public Dropdown.OnOptionSelectedDelegate OnOptionSelected { get; set; }
+    [Parameter] public RenderFragment TriggerComponent { get; set; }
+
+}

@@ -27,7 +27,7 @@
                 }
                 else
                 {
-                    @if (Model.Trigger.Mode == Mode.Text)
+                    @if (Model?.Trigger is null || Model?.Trigger?.Mode == Mode.Text)
                     {
                         <span>@Model.GetSelectedValue()</span>
                     }
