@@ -11,39 +11,39 @@
             <span class="sidemenu-logo-name">@LogoName</span>
         </div>
         <div class="sidemenu-list">
-            @foreach (var group in Model.MainButtonGroups)
-            {
-                <div class="button-group-container">
-                    <span class="button-group-name">@group.Name</span>
-                    <div class="button-group">
-                        @foreach (var button in group.Buttons)
-                        {
-                            <div class="button-row" @onclick=@InvokeVoid(OnButtonClick, button.Id)>
-                                <img class="button-icon" src=@button.IconUrl />
-                                <span class="button-name">@button.Name</span>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
+            @{
+                <div class="sidemenu-first">
+                     @{ DisplayButtonGroup(Model.MainButtonGroups); }
 
-            <div class="small-screen-button-groups">
-                @foreach (var group in Model.OnlySmallScreenButtonGroups)
-                {
-                    <div class="button-group-container">
-                        <span class="button-group-name">@group.Name</span>
-                        <div class="button-group">
-                            @foreach (var button in group.Buttons)
-                            {
-                                <div class="button-row">
-                                    <img class="button-icon" src=@button.IconUrl />
-                                    <span class="button-name">@button.Name</span>
-                                </div>
-                            }
-                        </div>
+                    <div class="small-screen-button-groups">
+                        @{ DisplayButtonGroup(Model.OnlySmallScreenButtonGroups); }
                     </div>
+
+                </div>
+                
+                <div class="bottom-button-groups">
+                     @{ DisplayButtonGroup(Model.BottomButtonGroups); }
+                </div>
+
+                void DisplayButtonGroup(IEnumerable<ButtonGroup> groups)
+                {
+                    @foreach (var group in groups)
+                    {
+                        <div class="button-group-container">
+                            <span class="button-group-name">@group.Name</span>
+                            <div class="button-group">
+                                @foreach (var button in group.Buttons)
+                                {
+                                    <div class="button-row" @onclick=@InvokeVoid(OnButtonClick, button.Id)>
+                                        <img class="button-icon" src=@button.IconUrl />
+                                        <span class="button-name">@button.Name</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
                 }
-            </div>
+            }
         </div>
     </div>
 </nav>
@@ -77,5 +77,6 @@
 
     public record ViewModel(
         ButtonGroup[] MainButtonGroups, 
-        ButtonGroup[] OnlySmallScreenButtonGroups);
+        ButtonGroup[] OnlySmallScreenButtonGroups,
+        ButtonGroup[] BottomButtonGroups);
 }

@@ -3,7 +3,7 @@
     left: 0;
     top: 0;
     width: fit-content;
-    height: 100vh;
+    height: 100%;
 
     display: block;
     background: white;
@@ -14,10 +14,14 @@
 .sidemenu-content {
     width: 67px;
     transition: width 300ms ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidemenu-content:hover .button-name {
     display: block;
+
 }
 
 .sidemenu-content:hover .sidemenu-logo-name {
@@ -125,6 +129,33 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+    height: fit-content;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.sidemenu-list:hover {
+    overflow-y: auto;
+}
+
+.sidemenu-list::-webkit-scrollbar {
+    width: 0.25rem;
+}
+
+.sidemenu-list::-webkit-scrollbar-track {
+    background: rgb(230, 230, 230);
+}
+
+.sidemenu-list::-webkit-scrollbar-thumb {
+    background: rgb(150, 150, 150);
+    border-radius: 10px;
+}
+
+
+.sidemenu-first {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .button-group-container {}
@@ -147,6 +178,8 @@
     padding: 10px;
     border-radius: 5px;
     overflow: hidden;
+    user-select: none;
+    white-space: nowrap;
 }
 
 .button-row:hover {
@@ -166,6 +199,12 @@
 
 .small-screen-button-groups {
     display: none;
+    height: fit-content;
+    box-sizing: border-box;
+}
+
+.bottom-button-groups {
+    height: fit-content;
 }
 
 @media only screen and (max-width: 600px) {
@@ -179,7 +218,7 @@
     }
 
     .always-on {
-        display: block;
+        display: flex;
         width: 12rem;
     }
 
