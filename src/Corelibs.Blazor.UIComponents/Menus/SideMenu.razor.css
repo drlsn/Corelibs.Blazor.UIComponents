@@ -207,6 +207,14 @@
     height: fit-content;
 }
 
+.off {
+    display: none;
+}
+
+.on {
+    display: block;
+}
+
 @media only screen and (max-width: 600px) {
     .menu-button-x {
         display: block;

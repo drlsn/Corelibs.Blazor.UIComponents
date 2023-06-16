@@ -1,10 +1,10 @@
 ﻿@inherits UIComponent
 
 <nav class="sidemenu">
-    <div class="menu-button menu-button-x" @onclick=@OnMenuButtonClick>
+    <div class="menu-button menu-button-x @_sidemenuContentAlwaysOffCssClass" @onclick=@OnMenuButtonClick>
         <img class="menu-button-icon" src=@MenuIconUrl/>
     </div>
-    <div class="sidemenu-content @_sidemenuContentAlwaysOnCssClass">
+    <div class="sidemenu-content @_sidemenuContentAlwaysOffCssClass @_sidemenuContentAlwaysOnCssClass @_menuButtonAlwaysOnCssClass">
         <div class="sidemenu-logo-panel">
             <div class="sidemenu-logo-panel-bg"></div>
             <img class="logo-image" src=@LogoImageUrl />
@@ -27,6 +27,9 @@
 
                 void DisplayButtonGroup(IEnumerable<ButtonGroup> groups)
                 {
+                    if (groups is null)
+                        return;
+
                     @foreach (var group in groups)
                     {
                         <div class="button-group-container">
@@ -60,6 +63,14 @@
     [Parameter] public OnSizeChangedDelegate OnSizeChanged { get; set; }
 
     private string _sidemenuContentAlwaysOnCssClass => IsMenuAlwaysActive ? "always-on" : "";
+    private string _menuButtonAlwaysOnCssClass => Model.MainButtonGroups is not null && Model.MainButtonGroups.Length > 0 ? "on" : "";
+    private string _sidemenuContentAlwaysOffCssClass => Model.MainButtonGroups is null || Model.MainButtonGroups.Length == 0 ? "off" : "";
+
+    protected override void OnInitialized()
+    {
+        if (Model is null)
+            return;
+    }
 
     public record ButtonGroup(string Name, Button[] Buttons);
     public record Button(string Id, string Name, string IconUrl);
