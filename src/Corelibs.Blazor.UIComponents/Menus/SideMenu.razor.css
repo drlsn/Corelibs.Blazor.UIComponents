@@ -7,6 +7,8 @@
 
     display: block;
     background: white;
+
+    z-index: 1;
 }
 
 .sidemenu-content {
@@ -120,7 +122,12 @@
     padding-left: 15px;
     padding-right: 15px;
     background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
+
+.button-group-container {}
 
 .button-group {
     margin-top: 5px;
@@ -157,6 +164,10 @@
     font-size: 14px;
 }
 
+.small-screen-button-groups {
+    display: none;
+}
+
 @media only screen and (max-width: 600px) {
     .menu-button-x {
         display: block;
@@ -170,5 +181,9 @@
     .always-on {
         display: block;
         width: 12rem;
+    }
+
+    .small-screen-button-groups {
+        display: block;
     }
 }

@@ -1,0 +1,35 @@
+﻿@inherits UIComponent
+
+<SideMenu 
+    OnSizeChanged=@OnSideMenuSizeChanged
+    OnButtonClick=@(id => InvokeVoid(OnButtonClick, id)())
+    MenuIconUrl=@MenuIconUrl
+    LogoName=@LogoName
+    LogoImageUrl=@LogoImageUrl
+    Model=@_sideMenuModel />
+
+<HorizontalMenu 
+    ButtonGroups=@TopMenuButtonGroups
+    OnButtonClick=@(id => InvokeVoid(OnButtonClick, id)()) />
+
+@code {
+    [Parameter] public string LogoName { get; set; }
+    [Parameter] public string MenuIconUrl { get; set; }
+    [Parameter] public string LogoImageUrl { get; set; }
+    [Parameter] public SideMenu.OnSizeChangedDelegate? OnSideMenuSizeChanged { get; set; }
+    [Parameter] public SideMenu.OnButtonClickDelegate? OnButtonClick { get; set; }
+
+    [Parameter] public SideMenu.ButtonGroup[] SideMenuButtonGroups { get; set; }
+    [Parameter] public HorizontalMenu.ButtonGroup[] TopMenuButtonGroups { get; set; }
+
+    private SideMenu.ViewModel _sideMenuModel => new(
+        SideMenuButtonGroups,
+        TopMenuButtonGroups
+            .Select(
+                g => new SideMenu.ButtonGroup("Other", 
+                    g.Buttons
+                        .Select(b => new SideMenu.Button(b.Id, b.Name, b.IconUrl))
+                        .ToArray()))
+            .ToArray()
+    );
+}

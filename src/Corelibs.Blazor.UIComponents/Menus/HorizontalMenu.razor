@@ -1,7 +1,6 @@
-﻿@if (ButtonGroups is null)
-{
-    return;
-}
+﻿@inherits UIComponent
+
+@if (ButtonGroups is null) { return; }
 
 <nav class="horizontal-menu">
     <div class="horizontal-menu-content">
@@ -12,7 +11,7 @@
                 <div class="button-group">
                     @foreach (var button in group.Buttons)
                     {
-                        <button class="button">
+                        <button class="button" @onclick=@InvokeVoid(OnButtonClick, button.Id)>
                             @if (Mode == ButtonMode.Text)
                             {
                                 @button.Name
@@ -30,8 +29,11 @@
 </nav>
 
 @code {
+    public delegate Task OnButtonClickDelegate(string id);
+
     [Parameter] public ButtonMode Mode { get; set; }
     [Parameter] public ButtonGroup[] ButtonGroups { get; set; }
+    [Parameter] public OnButtonClickDelegate OnButtonClick { get; set; }
 
     private string _sidemenuContentAlwaysOnCssClass => IsMenuAlwaysActive ? "always-on" : "";
 
