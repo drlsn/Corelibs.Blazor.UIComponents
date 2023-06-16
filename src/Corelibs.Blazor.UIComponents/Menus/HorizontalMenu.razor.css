@@ -1,0 +1,62 @@
+﻿.horizontal-menu {
+    width: 100%;
+    height: 45px;
+}
+
+.horizontal-menu-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+
+    width: 100%;
+    height: 100%;
+}
+
+.horizontal-menu-list {
+    display: flex;
+    gap: 15px;
+    justify-self: end;
+
+    width: fit-content;
+
+    padding-left: 15px;
+}
+
+.search-panel {
+    width: 100px;
+    height: 100%;
+}
+
+.button-group {
+    display: flex;
+    justify-self: end;
+
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.button {
+    padding: 10px;
+    border: none;
+    margin: 0;
+    background: none;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.button-icon {
+    width: 20px;
+    height: 20px;
+    filter: invert(70%);
+}
+
+.button:hover {
+    background: rgb(240, 240, 240);
+}
+
+@media only screen and (max-width: 600px) {
+    .horizontal-menu-content {
+        display: none;
+    }
+}
