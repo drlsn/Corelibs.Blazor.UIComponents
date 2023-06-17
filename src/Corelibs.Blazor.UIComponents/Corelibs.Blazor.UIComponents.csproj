@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Title>Corelibs.Blazor.UIComponents</Title>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <Authors>Tharius</Authors>
     <IncludeSymbols>True</IncludeSymbols>
   </PropertyGroup>
