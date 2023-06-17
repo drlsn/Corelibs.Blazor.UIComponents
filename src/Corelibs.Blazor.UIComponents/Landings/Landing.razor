@@ -1,0 +1,14 @@
+﻿
+<div class="landing">
+    <div class="title-texts">
+        <h1 class="title">@Title</h1>
+        <h3 class="description">@Description</h3>
+    </div>
+    <Label Model=Label />
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Description { get; set; }
+    [Parameter] public Label.ViewModel Label { get; set; }
+}

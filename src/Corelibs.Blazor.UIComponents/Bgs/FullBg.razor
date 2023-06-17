@@ -1,0 +1,9 @@
+﻿@if (string.IsNullOrWhiteSpace(ImageUrl)) { return; }
+
+<div class="full-bg" style=@_bgCssStyle></div>
+
+@code {
+    [Parameter] public string ImageUrl { get; set; }
+
+    private string _bgCssStyle => $"background: url({@ImageUrl}) no-repeat bottom left fixed;";
+}

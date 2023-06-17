@@ -1,0 +1,38 @@
+﻿@if (Model is null) { return; }
+
+<div class="label">
+    @if (Model.Text is not null)
+    {
+        <h2 class="label-text">@Model.Text</h2>
+    }
+    else
+    @if (Model.ImageUrl is not null)
+    {
+        <img class="label-image" src=@Model.ImageUrl />
+    }
+    else
+    @if (Model.Component is not null)
+    {
+        @Model.Component
+        @Get();
+    }
+</div>
+
+@{
+    RenderFragment Get()
+    {
+        return builder =>
+        {
+            <div class="something">
+                <p>Sup!</p>
+            </div>
+        };
+    }
+}
+
+@code {
+    [Parameter] public ViewModel Model { get; set; }
+
+    public record ViewModel(string Text = null, string ImageUrl = null, RenderFragment Component = null);
+
+}

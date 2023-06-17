@@ -1,0 +1,33 @@
+﻿.landing {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 100px;
+    align-items: center;
+}
+
+.title-texts {
+
+}
+
+.title {
+    font-size: 45px;
+    margin: 0;
+}
+
+.description {
+    font-weight: lighter;
+    font-size: 16px;
+    color: rgb(100, 100, 100);
+}
+
+div ::deep .label-image {
+    width: 400px;
+    height: 400px;
+}
+
+@media only screen and (max-width: 800px) {
+    .landing {
+        flex-direction: column;
+        gap: 50px;
+    }
+}
