@@ -38,8 +38,18 @@
                                 @foreach (var button in group.Buttons)
                                 {
                                     <div class="button-row" @onclick=@InvokeVoid(OnButtonClick, button.Id)>
-                                        <img class="button-icon" src=@button.IconUrl />
-                                        <span class="button-name">@button.Name</span>
+                                        @if (button.IconUrl.IsOk())
+                                        {
+                                            <img class="button-icon" src=@button.IconUrl />
+                                        }
+                                        @if (button.Name.IsOk())
+                                        {
+                                            <span class="button-name">@button.Name</span>
+                                        }
+                                        else if (button.Component is not null)
+                                        {
+                                            @button.Component
+                                        }
                                     </div>
                                 }
                             </div>
@@ -73,7 +83,7 @@
     }
 
     public record ButtonGroup(string Name, Button[] Buttons);
-    public record Button(string Id, string Name, string IconUrl);
+    public record Button(string Id, string Name = null, string IconUrl = null, RenderFragment Component = null);
 
     public bool IsMenuAlwaysActive { get; private set; }
     private void OnMenuButtonClick()

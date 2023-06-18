@@ -29,7 +29,7 @@
             .Select(
                 g => new SideMenu.ButtonGroup("Other", 
                     g.Buttons
-                        .Select(b => new SideMenu.Button(b.Id, b.Name, b.IconUrl))
+                        .Select(b => new SideMenu.Button(b.Id, b.Name, b.IconUrl, b.Component))
                         .ToArray()))
             .ToArray(),
         BottomLeftMenuButtonGroups
