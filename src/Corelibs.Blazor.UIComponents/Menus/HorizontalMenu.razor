@@ -13,9 +13,7 @@
                     {
                         @if (button.Component is not null)
                         {
-                            <button class="button" @onclick=@(() => OnButtonClickInternal(button))>
-                                @button.Component
-                            </button>
+                            @button.Component
                         }
                         else
                         @if (button.Name.IsOk())

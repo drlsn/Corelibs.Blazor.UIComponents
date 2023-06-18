@@ -197,6 +197,10 @@
     font-size: 14px;
 }
 
+.button-content {
+    position: relative;
+}
+
 .small-screen-button-groups {
     display: none;
     height: fit-content;
