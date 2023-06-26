@@ -1,4 +1,12 @@
-﻿@inherits UIComponent
+﻿@using Corelibs.Basic.Collections;
+@inherits UIComponent
+
+@if (SideMenuButtonGroups.IsNullOrEmpty() &&
+     TopMenuButtonGroups.IsNullOrEmpty() &&
+     BottomLeftMenuButtonGroups.IsNullOrEmpty())
+{
+    return;
+}
 
 <SideMenu 
     OnSizeChanged=@OnSideMenuSizeChanged
@@ -20,18 +28,18 @@
     [Parameter] public SideMenu.OnButtonClickDelegate? OnButtonClick { get; set; }
 
     [Parameter] public SideMenu.ButtonGroup[] SideMenuButtonGroups { get; set; }
-    [Parameter] public HorizontalMenu.ButtonGroup[] TopMenuButtonGroups { get; set; }
+    [Parameter] public HorizontalMenu.ButtonGroup[] TopMenuButtonGroups { get; set; } = Array.Empty<HorizontalMenu.ButtonGroup>();
     [Parameter] public SideMenu.ButtonGroup[] BottomLeftMenuButtonGroups { get; set; }
 
     private SideMenu.ViewModel _sideMenuModel => new(
         SideMenuButtonGroups,
         TopMenuButtonGroups
-            .Select(
+            ?.SelectOrDefault(
                 g => new SideMenu.ButtonGroup("Other", 
-                    g.Buttons
-                        .Select(b => new SideMenu.Button(b.Id, b.Name, b.IconUrl, b.Component))
-                        .ToArray()))
-            .ToArray(),
+                    g?.Buttons
+                        ?.SelectOrDefault(b => new SideMenu.Button(b?.Id, b?.Name, b?.IconUrl, b?.Component))
+                        ?.ToArray()))
+            ?.ToArray(),
         BottomLeftMenuButtonGroups
     );
 }
