@@ -1,5 +1,7 @@
-﻿
+﻿@using Corelibs.Basic.Collections;
+
 <div class="vlist-card">
+
     <div class="list-title-panel">
         <div class="list-title-texts">
             @if (Title.IsOk())
@@ -11,16 +13,25 @@
                 <span class="list-description">@Description</span>
             }
         </div>
-        <Dropdown Model=@DropdownModel OnOptionSelected=OnMenuOptionSelected>
-            <TriggerComponent>
-                <BurgerButton />
-            </TriggerComponent>
-        </Dropdown>
-        @*<BurgerButton />*@
+        @if (DropdownModel is not null)
+        {
+            <Dropdown Model=@DropdownModel OnOptionSelected=OnMenuOptionSelectedInternal>
+                <TriggerComponent>
+                    <BurgerButton />
+                </TriggerComponent>
+            </Dropdown>
+        }
     </div>
     <div class="items">
-        @ChildContent
+        @foreach (var child in Children.Values)
+        {
+            <Item_1 Id=@child.Id Title=@child.Title DropdownModel=@Children.DropdownModel OnItemClick=OnItemClickInternal />
+        }
+
+        @if (ChildContent is not null) { @ChildContent }
+
     </div>
+
 </div>
 
 @code {
@@ -29,5 +40,46 @@
     [Parameter] public RenderFragment ChildContent { get; set; }
 
     [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
-    [Parameter] public Dropdown.ViewModel DropdownModel { get; set; }
+    [Parameter] public Item_1.OnItemClickDelegate? OnItemClick { get; set; }
+
+    [Parameter] public Dropdown.ViewModel DropdownModel { get; set; } = _defaultDropdownModel;
+
+    [Parameter] public List<Dropdown.Option> AdditionalDropdownOptions { get; set; }
+    [Parameter] public ChildrenModel Children { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!AdditionalDropdownOptions.IsNullOrEmpty())
+            DropdownModel.Options.AddRange(AdditionalDropdownOptions);
+    }
+
+    private async Task<bool> OnMenuOptionSelectedInternal(Dropdown.Option option)
+    {
+        if (option.Id is "add")
+            ;
+
+        return true;
+    }
+
+    private Task OnItemClickInternal(string id)
+    {
+        OnItemClick?.Invoke(id);
+        return Task.CompletedTask;
+    }
+
+    private static readonly Dropdown.ViewModel _defaultDropdownModel = new(
+        Options: new()
+        {
+            new("add", "Add"),
+        },
+        Trigger: new(IsFixed: true, Value: "Menu", Mode: Dropdown.Mode.Component)
+    );
+
+    public class ChildrenModel
+    {
+        public Dropdown.ViewModel DropdownModel { get; set; }
+        public List<ChildModel> Values { get; set; }
+    }
+
+    public record ChildModel(string Id, string Title, Func<string, Task> OnItemClick);
 }
