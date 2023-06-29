@@ -1,5 +1,7 @@
 ﻿@using Corelibs.Basic.Collections;
 
+@inherits UIComponent
+
 <div class="vlist-card">
 
     <div class="list-title-panel">
@@ -23,9 +25,22 @@
         }
     </div>
     <div class="items">
-        @foreach (var child in ListItems.Values)
+        @for (int i = 0; i < ListItems.Count; i++)
         {
-            <Item_1 Id=@child.Id Title=@child.Name DropdownModel=@ListItems.DropdownModel OnItemClick=OnItemClickInternal />
+            var child = ListItems[i];
+
+            if (_isAdd && i == 0)
+            {
+                <EditableText Text="Name.." class="no-select" @ref=_editableText
+                    FontSize=@("0.83em")
+                    PaddingLeft=10
+                    PaddingRight=10
+                    
+                    OnSubmit=@OnAddItemOnTopInternal 
+                    OnDiscard=@OnDiscardEdit/>
+            }
+
+            <Item_1 Id=@child.Id Title=@child.Name DropdownModel=@ItemsDropdownModel OnItemClick=OnItemClickInternal />
         }
 
     </div>
@@ -33,17 +48,23 @@
 </div>
 
 @code {
+    public delegate Task<bool> NameDelegate(string name);
+
     [Parameter] public string Title { get; set; }
     [Parameter] public string Description { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
 
+    [Parameter] public NameDelegate OnAddItemOnTop { get; set; }
     [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
     [Parameter] public Item_1.OnItemClickDelegate? OnItemClick { get; set; }
 
     [Parameter] public Dropdown.ViewModel DropdownModel { get; set; } = _defaultDropdownModel;
+    [Parameter] public Dropdown.ViewModel ItemsDropdownModel { get; set; }
 
     [Parameter] public List<Dropdown.Option> AdditionalDropdownOptions { get; set; }
-    [Parameter] public ListItemsModel ListItems { get; set; }
+    [Parameter] public List<ListItem> ListItems { get; set; } = new();
+
+    private EditableText _editableText;
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,12 +72,47 @@
             DropdownModel.Options.AddRange(AdditionalDropdownOptions);
     }
 
+    private bool _isAdd;
     private async Task<bool> OnMenuOptionSelectedInternal(Dropdown.Option option)
     {
         if (option.Id is "add")
-            ;
+        {
+            _isAdd = true;
+            await InvokeAsync(StateHasChanged);
+        }
 
         return true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            return;
+
+        if (_isAdd)
+            await _editableText.SetIsEdit(true);
+    }
+
+    protected async Task<bool> OnAddItemOnTopInternal(string name)
+    {
+        _isAdd = false;
+        if (!await InvokeBool(OnAddItemOnTop, name)())
+        {
+            await InvokeAsync(StateHasChanged);
+            return false;
+        }
+
+        ListItems.Insert(0, new("", name));
+        //await InvokeAsync(StateHasChanged);
+
+        return true;
+    }
+
+    protected Task OnDiscardEdit(string name)
+    {
+        _isAdd = false;
+
+        return InvokeAsync(StateHasChanged);
     }
 
     private Task OnItemClickInternal(string id)
@@ -72,13 +128,6 @@
         },
         Trigger: new(IsFixed: true, Value: "Menu", Mode: Dropdown.Mode.Component)
     );
-
-    public class ListItemsModel
-    {
-        public Dropdown.ViewModel DropdownModel { get; set; }
-        public Func<string, Task> OnItemClick { get; set; }
-        public List<ListItem> Values { get; set; }
-    }
 
     public record ListItem(string Id, string Name);
 }

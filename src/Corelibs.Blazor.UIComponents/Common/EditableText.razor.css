@@ -1,0 +1,19 @@
+﻿.input {
+    background: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    border-radius: 0;
+    box-shadow: none;
+    height: 100%;
+    opacity: 0.6;
+    color: none;
+    -webkit-appearance: none;
+}
+
+.input:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}

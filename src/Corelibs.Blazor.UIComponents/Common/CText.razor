@@ -1,0 +1,17 @@
+﻿@using Corelibs.Blazor.UIComponents.Common.Css;
+
+@inherits BaseElement
+
+<p style=@Style class="@(@class)">@Text</p>
+
+@code {
+    [Parameter] public string? Text { get; set; } = "";
+    [Parameter] public CssAttribute? FontSize { get; set; }
+    [Parameter] public CssAttribute? FontWeight { get; set; }
+    [Parameter] public CssAttribute? Margin { get; set; }
+    [Parameter] public CssAttribute? MarginLeft { get; set; }
+    [Parameter] public CssAttribute? MarginRight { get; set; }
+    [Parameter] public CssAttribute? PaddingLeft { get; set; }
+    [Parameter] public CssAttribute? PaddingRight { get; set; }
+}
+    

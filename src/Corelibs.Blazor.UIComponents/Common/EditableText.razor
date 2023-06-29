@@ -1,0 +1,171 @@
+﻿@using Corelibs.Blazor.UIComponents.Common.Css;
+@inherits BaseElement
+
+@if (Mode == ModeType.EditOnClick)
+{
+    <div @onclick=OnClick class="@class_topmost" @onclick:stopPropagation="true" @onclick:preventDefault="true">
+        @if (Mode == ModeType.InputOnly || _isEdit)
+        {
+            <input class="input @(@class)" style=@Style type="text" placeholder=@Placeholder value=@Text
+            @oninput=OnInputChangedInternal @onfocusout=OnFocusOut @onkeydown=OnKeyDown @ref=_input />
+        }
+        else
+        {
+            <CText Text=@Text style=style class=@(@class)
+                   FontSize=FontSize />
+        }
+    </div>
+}
+else
+{
+    <div @onclick=OnClick class="@class_topmost">
+        @if (Mode == ModeType.InputOnly || _isEdit)
+        {
+            <input class="input @(@class)" style=@Style type="text" placeholder=@Placeholder value=@Text
+            @oninput=OnInputChangedInternal @onfocusout=OnFocusOut @onkeydown=OnKeyDown @ref=_input />
+        }
+        else
+        {
+            <CText Text=@Text style=style class=@(@class)
+                   FontSize=FontSize
+                   FontWeight=FontWeight
+                   Margin=Margin
+                   MarginLeft=MarginLeft
+                   MarginRight=MarginRight 
+                   PaddingLeft=PaddingLeft
+                   PaddingRight=PaddingRight />
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Placeholder { get; set; } = "Enter Text";
+    [Parameter] public ModeType Mode { get; set; } 
+    [Parameter] public bool IsDynamicEdit { get; set; }
+    [Parameter] public bool SubmitIfSameName { get; set; }
+    [Parameter] public Func<string, Task<bool>> OnInputChanged { get; set; }
+    [Parameter] public Func<string, Task<bool>> OnSubmit { get; set; }
+    [Parameter] public Func<string, Task> OnDiscard { get; set; }
+
+    [Parameter] public CssAttribute? FontSize { get; set; }
+    [Parameter] public CssAttribute? FontWeight { get; set; }
+    [Parameter] public CssAttribute? Margin { get; set; } = 0;
+    [Parameter] public CssAttribute? MarginLeft { get; set; } = 0;
+    [Parameter] public CssAttribute? MarginRight { get; set; } = 0;
+    [Parameter] public CssAttribute? PaddingLeft { get; set; } = 0;
+    [Parameter] public CssAttribute? PaddingRight { get; set; } = 0;
+    [Parameter] public string class_topmost { get; set; }
+
+    public string? PreviousText { get; private set; }
+
+    private ElementReference _input;
+    private bool _isEdit;
+    private bool _wasSubmit;
+
+    protected override void OnInitialized()
+    {
+        PreviousText = Text;
+    }
+
+    private async Task OnInputChangedInternal(ChangeEventArgs args)
+    {
+        var value = args.Value as string;
+
+        if (IsDynamicEdit)
+        {
+            PreviousText = Text;
+        }
+
+        Text = value;
+
+        if (OnInputChanged != null)
+            if (!await OnInputChanged(Text))
+                Text = PreviousText;
+    }
+
+    public void FocusInputIfShown()
+    {
+        if (Mode == ModeType.InputOnly)
+            _input.FocusAsync();
+    }
+
+    private void OnClick()
+    {
+        if (_isEdit)
+            return;
+
+        if (Mode == ModeType.EditOnClick)
+        {
+            PreviousText = Text;
+            _isEdit = true;
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (_isEdit)
+            _input.FocusAsync();
+    }
+
+    private async Task OnFocusOut(FocusEventArgs args)
+    {
+        _isEdit = false;
+        PreviousText = Text;
+
+        if (!_wasSubmit)
+            await OnDiscard?.Invoke(Text);
+
+        _wasSubmit = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            if (!SubmitIfSameName && Text == PreviousText)
+            {
+                Text = PreviousText;
+                await SetIsEdit(false);
+                return;
+            }
+
+            if (!IsDynamicEdit)
+            {
+                if (OnSubmit != null)
+                    if (!await OnSubmit(Text))
+                        Text = PreviousText;
+                    else
+                        _wasSubmit = true;
+
+                if (Mode != ModeType.InputOnly)
+                {
+                    _isEdit = false;
+                    await InvokeAsync(StateHasChanged);
+                }
+            }
+        }
+    }
+
+    public bool IsEdit => Mode != ModeType.InputOnly ? _isEdit : true;
+
+    public Task SetIsEdit(bool value)
+    {
+        if (value == _isEdit)
+            return Task.CompletedTask;
+
+        if (!value && Mode == ModeType.InputOnly)
+            Mode = ModeType.None;
+
+        _isEdit = value;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public enum ModeType
+    {
+        None,
+        EditOnClick,
+        InputOnly
+    }
+}

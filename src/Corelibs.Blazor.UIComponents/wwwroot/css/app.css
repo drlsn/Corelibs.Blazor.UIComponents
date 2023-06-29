@@ -109,6 +109,9 @@ button:focus {
     background: none;
 }
 
+h1, h2, h3, h4, h5, h6, p, span {
+    caret-color: transparent;
+}
 
 @media only screen and (max-width: 600px) {
     .grid-1x2 {
