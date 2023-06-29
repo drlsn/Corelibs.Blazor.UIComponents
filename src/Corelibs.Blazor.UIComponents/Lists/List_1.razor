@@ -23,12 +23,10 @@
         }
     </div>
     <div class="items">
-        @foreach (var child in Children.Values)
+        @foreach (var child in ListItems.Values)
         {
-            <Item_1 Id=@child.Id Title=@child.Title DropdownModel=@Children.DropdownModel OnItemClick=OnItemClickInternal />
+            <Item_1 Id=@child.Id Title=@child.Name DropdownModel=@ListItems.DropdownModel OnItemClick=OnItemClickInternal />
         }
-
-        @if (ChildContent is not null) { @ChildContent }
 
     </div>
 
@@ -45,7 +43,7 @@
     [Parameter] public Dropdown.ViewModel DropdownModel { get; set; } = _defaultDropdownModel;
 
     [Parameter] public List<Dropdown.Option> AdditionalDropdownOptions { get; set; }
-    [Parameter] public ChildrenModel Children { get; set; }
+    [Parameter] public ListItemsModel ListItems { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,11 +73,12 @@
         Trigger: new(IsFixed: true, Value: "Menu", Mode: Dropdown.Mode.Component)
     );
 
-    public class ChildrenModel
+    public class ListItemsModel
     {
         public Dropdown.ViewModel DropdownModel { get; set; }
-        public List<ChildModel> Values { get; set; }
+        public Func<string, Task> OnItemClick { get; set; }
+        public List<ListItem> Values { get; set; }
     }
 
-    public record ChildModel(string Id, string Title, Func<string, Task> OnItemClick);
+    public record ListItem(string Id, string Name);
 }
