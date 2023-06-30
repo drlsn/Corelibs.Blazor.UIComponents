@@ -25,21 +25,19 @@
         }
     </div>
     <div class="items">
+        @if (_isAdd)
+        {
+            <EditableText Text="Name.." class="no-select" @ref=_editableText
+                FontSize=@("0.83em")
+                PaddingLeft=10
+                PaddingRight=10
+                OnSubmit=@OnAddItemOnTopInternal
+                OnDiscard=@OnDiscardEdit />
+        }
+
         @for (int i = 0; i < ListItems.Count; i++)
         {
             var child = ListItems[i];
-
-            if (_isAdd && i == 0)
-            {
-                <EditableText Text="Name.." class="no-select" @ref=_editableText
-                    FontSize=@("0.83em")
-                    PaddingLeft=10
-                    PaddingRight=10
-                    
-                    OnSubmit=@OnAddItemOnTopInternal 
-                    OnDiscard=@OnDiscardEdit/>
-            }
-
             <Item_1 Id=@child.Id Title=@child.Name DropdownModel=@ItemsDropdownModel OnItemClick=OnItemClickInternal />
         }
 
