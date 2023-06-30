@@ -38,7 +38,7 @@
         @for (int i = 0; i < ListItems.Count; i++)
         {
             var child = ListItems[i];
-            <Item_1 Id=@child.Id Title=@child.Name DropdownModel=@ItemsDropdownModel OnItemClick=OnItemClickInternal />
+            <Item Id=@child.Id Title=@child.Name DropdownModel=@ItemsDropdownModel OnItemClick=OnItemClickInternal />
         }
 
     </div>
@@ -54,7 +54,7 @@
 
     [Parameter] public NameDelegate OnAddItemOnTop { get; set; }
     [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
-    [Parameter] public Item_1.OnItemClickDelegate? OnItemClick { get; set; }
+    [Parameter] public Item.OnItemClickDelegate? OnItemClick { get; set; }
 
     [Parameter] public Dropdown.ViewModel DropdownModel { get; set; } = _defaultDropdownModel;
     [Parameter] public Dropdown.ViewModel ItemsDropdownModel { get; set; }
