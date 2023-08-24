@@ -12,6 +12,10 @@
     height: fit-content;
 }
 
+.description {
+    padding-top: 10px;
+}
+
 .items {
     display: flex;
     flex-direction: column;

@@ -8,11 +8,40 @@
         <div class="list-title-texts">
             @if (Title.IsOk())
             {
-                <h4 class="list-title">@Title</h4>
+                @if (!TitleEdit)
+                {
+                    <h4 class="list-title">@Title</h4>
+                }
+                else
+                {
+                    <EditableText Text=@Title class="no-select" @ref=_editableText
+                        Mode=EditableText.ModeType.EditOnClick
+                        FontSize=@("15px")
+                        FontWeight=@("1000")
+                        PaddingLeft=10
+                        PaddingRight=10
+                        OnSubmit=@OnTitleEditInternal
+                        OnDiscard=@OnDiscardEdit />
+                }
             }
             @if (Description.IsOk())
             {
-                <span class="list-description">@Description</span>
+                <div class="description">
+                    @if (!DescriptionEdit)
+                    {
+                        <span class="list-description">@Description</span>
+                    }
+                    else
+                    {
+                        <EditableText Text=@Description class="no-select" @ref=_editableText
+                            Mode=EditableText.ModeType.EditOnClick
+                            FontSize=@("13px")
+                            PaddingLeft=10
+                            PaddingRight=10
+                            OnSubmit=@OnDescriptionEditInternal
+                            OnDiscard=@OnDiscardEdit />
+                    }
+                </div>
             }
         </div>
         @if (DropdownModel is not null)
@@ -35,10 +64,13 @@
                 OnDiscard=@OnDiscardEdit />
         }
 
-        @for (int i = 0; i < ListItems.Count; i++)
+        @if (!ListItems.IsNullOrEmpty())
         {
-            var child = ListItems[i];
-            <Item Id=@child.Id Title=@child.Name DropdownModel=@ItemsDropdownModel OnItemClick=OnItemClickInternal />
+            @for (int i = 0; i < ListItems.Count; i++)
+            {
+                var child = ListItems[i];
+                <Item Id=@child.Id Title=@child.Name DropdownModel=@ItemsDropdownModel OnItemClick=OnItemClickInternal />
+            }
         }
 
     </div>
@@ -48,9 +80,15 @@
 @code {
     public delegate Task<bool> NameDelegate(string name);
 
-    [Parameter] public string Title { get; set; }
-    [Parameter] public string Description { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
+
+    [Parameter] public string Title { get; set; }
+    [Parameter] public bool TitleEdit { get; set; }
+    [Parameter] public NameDelegate OnTitleEdit { get; set; }
+
+    [Parameter] public string Description { get; set; }
+    [Parameter] public bool DescriptionEdit { get; set; }
+    [Parameter] public NameDelegate OnDescriptionEdit { get; set; }
 
     [Parameter] public NameDelegate OnAddItemOnTop { get; set; }
     [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
@@ -89,6 +127,32 @@
 
         if (_isAdd)
             await _editableText.SetIsEdit(true);
+    }
+
+    protected async Task<bool> OnTitleEditInternal(string name)
+    {
+        if (!await InvokeBool(OnTitleEdit, name)())
+        {
+            await InvokeAsync(StateHasChanged);
+            return false;
+        }
+
+        //await InvokeAsync(StateHasChanged);
+
+        return true;
+    }
+
+    protected async Task<bool> OnDescriptionEditInternal(string name)
+    {
+        if (!await InvokeBool(OnDescriptionEdit, name)())
+        {
+            await InvokeAsync(StateHasChanged);
+            return false;
+        }
+
+        //await InvokeAsync(StateHasChanged);
+
+        return true;
     }
 
     protected async Task<bool> OnAddItemOnTopInternal(string name)
