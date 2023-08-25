@@ -14,6 +14,21 @@
 
 .description {
     padding-top: 10px;
+    padding-bottom  : 10px;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    min-height: 25px;
+    max-height: fit-content;
 }
 
 .items {
