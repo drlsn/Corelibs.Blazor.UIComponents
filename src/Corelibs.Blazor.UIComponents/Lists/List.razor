@@ -18,9 +18,7 @@
                         Mode=EditableText.ModeType.EditOnClick
                         FontSize=@("15px")
                         FontWeight=@("1000")
-                        PaddingLeft=10
-                        PaddingRight=10
-                        OnSubmit=@OnTitleEditInternal
+                        OnSubmit=@(name => OnTitleEditInternal("", name, ""))
                         OnDiscard=@OnDiscardEdit />
                 }
             }
@@ -36,9 +34,7 @@
                         <EditableText Text=@Description class="no-select" @ref=_editableText
                             Mode=EditableText.ModeType.EditOnClick
                             FontSize=@("13px")
-                            PaddingLeft=10
-                            PaddingRight=10
-                            OnSubmit=@OnDescriptionEditInternal
+                            OnSubmit=@(name => OnDescriptionEditInternal("", name, ""))
                             OnDiscard=@OnDiscardEdit />
                     }
                 </div>
@@ -46,7 +42,7 @@
         </div>
         @if (DropdownModel is not null)
         {
-            <Dropdown Model=@DropdownModel OnOptionSelected=OnMenuOptionSelectedInternal>
+            <Dropdown Model=@DropdownModel OnOptionSelected=@(opt => OnMenuOptionSelectedInternal(opt, 0, ""))>
                 <TriggerComponent>
                     <BurgerButton />
                 </TriggerComponent>
@@ -54,43 +50,101 @@
         }
     </div>
     <div class="items">
-        @if (_isAdd)
-        {
-            <EditableText Text="Name.." class="no-select" @ref=_editableText
-                FontSize=@("0.83em")
-                PaddingLeft=10
-                PaddingRight=10
-                OnSubmit=@OnAddItemOnTopInternal
-                OnDiscard=@OnDiscardEdit />
-        }
+        
 
-        @if (!ListItems.IsNullOrEmpty())
-        {
-            @for (int i = 0; i < ListItems.Count; i++)
-            {
-                var child = ListItems[i];
-                <Item Id=@child.Id Title=@child.Name DropdownModel=@ItemsDropdownModel OnItemClick=OnItemClickInternal />
-            }
-        }
+        @RenderList("", "", ListItems, nestLevel: 0)
 
     </div>
 
 </div>
 
+@{
+    RenderFragment RenderList(string parentId, string parentType, List<ListItem> items, int nestLevel)
+    {
+        @if (_isAddSelected && nestLevel == _nestLevelSelected)
+        {
+            <EditableText Text="Name.." class="no-select" @ref=_editableText
+                      FontSize=@("0.83em")
+                      OnSubmit=@(name => OnAddItemOnTopInternal(name, parentId, parentType))
+                      OnDiscard=@OnDiscardEdit />
+        }
+
+        if (items.IsNullOrEmpty())
+            return null;
+
+        return builder =>
+        {
+            @for (int i = 0; i < ListItems.Count; i++)
+            {
+                var item = ListItems[i];
+                if (item.Children.IsNullOrEmpty())
+                {
+                    <Item 
+                        Id=@item.Id 
+                        Title=@item.Name 
+                        DropdownModel=@ItemsDropdownModel
+                        OnItemClick=OnItemClickInternal
+                        OnMenuOptionSelected=@(opt => OnMenuOptionSelectedInternal(opt, nestLevel, parentType)) />
+                }
+                else
+                {
+                    <div class="list-title-texts">
+                        @if (Title.IsOk())
+                        {
+                            @if (!TitleEdit)
+                            {
+                                <h4 class="list-title">@Title</h4>
+                            }
+                            else
+                            {
+                                <EditableText Text=@Title class="no-select" @ref=_editableText
+                                    Mode=EditableText.ModeType.EditOnClick
+                                    FontSize=@("15px")
+                                    FontWeight=@("1000")
+                                    OnSubmit=@(name => OnTitleEditInternal(item.Id, name, parentType))
+                                    OnDiscard=@OnDiscardEdit />
+                            }
+                        }
+                        @if (Description.IsOk())
+                        {
+                            <div class="description">
+                                @if (!DescriptionEdit)
+                                {
+                                    <span class="list-description">@Description</span>
+                                }
+                                else
+                                {
+                                    <EditableText Text=@Description class="no-select" @ref=_editableText
+                                        Mode=EditableText.ModeType.EditOnClick
+                                        FontSize=@("13px")
+                                        OnSubmit=@(name => OnDescriptionEditInternal(item.Id, name, parentType))
+                                        OnDiscard=@OnDiscardEdit />
+                                }
+                            </div>
+                        }
+                    </div>
+                    RenderList(item.Id, item.Type, item.Children, ++nestLevel);
+                }
+            }
+        };
+    }
+}
+
 @code {
-    public delegate Task<bool> NameDelegate(string name);
+    public delegate Task<bool> EditNameDelegate(string id, string name, string? parentType = null);
+    public delegate Task<bool> AddDelegate(string name, string parentId, string? parentType = null);
 
     [Parameter] public RenderFragment ChildContent { get; set; }
 
     [Parameter] public string Title { get; set; }
     [Parameter] public bool TitleEdit { get; set; }
-    [Parameter] public NameDelegate OnTitleEdit { get; set; }
+    [Parameter] public EditNameDelegate OnTitleEdit { get; set; }
 
     [Parameter] public string Description { get; set; }
     [Parameter] public bool DescriptionEdit { get; set; }
-    [Parameter] public NameDelegate OnDescriptionEdit { get; set; }
+    [Parameter] public EditNameDelegate OnDescriptionEdit { get; set; }
 
-    [Parameter] public NameDelegate OnAddItemOnTop { get; set; }
+    [Parameter] public AddDelegate OnAddItemOnTop { get; set; }
     [Parameter] public Dropdown.OnOptionSelectedDelegate OnMenuOptionSelected { get; set; }
     [Parameter] public Item.OnItemClickDelegate? OnItemClick { get; set; }
 
@@ -108,12 +162,14 @@
             DropdownModel.Options.AddRange(AdditionalDropdownOptions);
     }
 
-    private bool _isAdd;
-    private async Task<bool> OnMenuOptionSelectedInternal(Dropdown.Option option)
+    private bool _isAddSelected;
+    private int _nestLevelSelected;
+    private async Task<bool> OnMenuOptionSelectedInternal(Dropdown.Option option, int nestLevel, string parentType)
     {
         if (option.Id is "add")
         {
-            _isAdd = true;
+            _isAddSelected = true;
+            _nestLevelSelected = nestLevel;
             await InvokeAsync(StateHasChanged);
         }
 
@@ -125,13 +181,13 @@
         if (firstRender)
             return;
 
-        if (_isAdd)
+        if (_isAddSelected)
             await _editableText.SetIsEdit(true);
     }
 
-    protected async Task<bool> OnTitleEditInternal(string name)
+    protected async Task<bool> OnTitleEditInternal(string id, string name, string parentType = null)
     {
-        if (!await InvokeBool(OnTitleEdit, name)())
+        if (!await InvokeBool(OnTitleEdit, id, name, parentType)())
         {
             await InvokeAsync(StateHasChanged);
             return false;
@@ -142,9 +198,9 @@
         return true;
     }
 
-    protected async Task<bool> OnDescriptionEditInternal(string name)
+    protected async Task<bool> OnDescriptionEditInternal(string id, string name, string parentType = null)
     {
-        if (!await InvokeBool(OnDescriptionEdit, name)())
+        if (!await InvokeBool(OnDescriptionEdit, id, name, parentType)())
         {
             await InvokeAsync(StateHasChanged);
             return false;
@@ -155,10 +211,10 @@
         return true;
     }
 
-    protected async Task<bool> OnAddItemOnTopInternal(string name)
+    protected async Task<bool> OnAddItemOnTopInternal(string name, string parentId, string parentType)
     {
-        _isAdd = false;
-        if (!await InvokeBool(OnAddItemOnTop, name)())
+        _isAddSelected = false;
+        if (!await InvokeBool(OnAddItemOnTop, name, parentId, parentType)())
         {
             await InvokeAsync(StateHasChanged);
             return false;
@@ -172,14 +228,14 @@
 
     protected Task OnDiscardEdit(string name)
     {
-        _isAdd = false;
+        _isAddSelected = false;
 
         return InvokeAsync(StateHasChanged);
     }
 
-    private Task OnItemClickInternal(string id)
+    private Task OnItemClickInternal(string id, string type = null)
     {
-        OnItemClick?.Invoke(id);
+        OnItemClick?.Invoke(id, type);
         return Task.CompletedTask;
     }
 
@@ -191,5 +247,5 @@
         Trigger: new(IsFixed: true, Value: "Menu", Mode: Dropdown.Mode.Component)
     );
 
-    public record ListItem(string Id, string Name);
+    public record ListItem(string Id, string Name, string? Type = null, List<ListItem>? Children = null);
 }
